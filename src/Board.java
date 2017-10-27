@@ -4,22 +4,25 @@ public class Board {
     private final int[][] blockz;
 
     private final int[][] goal;
+    
+    private final int n; 
 
     public Board(int[][] blocks)    // construct a board from an n-by-n array of blocks           
     {
         validate(blocks);
-        blockz = new int[blocks.length][blocks[0].length];
+        n = blocks.length;
+        blockz = new int[n][n];
         int num  = 0;
-        goal = new int[blocks.length][blocks[0].length];
+        goal = new int[n][n];
 
-        for (int i = 0; i < blocks.length; i++) {
-            for (int j = 0; j < blocks[0].length; j++) {
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
                 blockz[i][j] = blocks[i][j];
             }
         }
-        for (int i = 0; i < blocks.length; i++) {
-            for (int j = 0; j < blocks[0].length; j++) {
-                if (i == blocks.length - 1 && j == blocks.length - 1)   break;
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                if (i == n - 1 && j == n - 1)   break;
                 goal[i][j] = ++num;
             }
         }
@@ -27,14 +30,14 @@ public class Board {
 
     public int dimension()                 // board dimension n
     {
-        return blockz.length;
+        return n;
     }
     public int hamming()                   // number of blocks out of place
     {
         if (isGoal())   return 0;
         int hamming = 0;
-        for (int i = 0; i < blockz.length; i++) {
-            for (int j = 0; j < blockz[0].length; j++) {
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
                 if (blockz[i][j] != 0 && blockz[i][j] != goal[i][j])    hamming++;
             }
         }
@@ -44,8 +47,8 @@ public class Board {
     {
         if (isGoal())   return 0;
         int manhattan = 0;
-        for (int i = 0; i < blockz.length; i++) {
-            for (int j = 0; j < blockz[0].length; j++) {
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
                 if (blockz[i][j] != 0) {
 
                     // e.g.: 5 is in (0, 0)
@@ -65,8 +68,8 @@ public class Board {
     }
     public boolean isGoal()                // is this board the goal board?
     {
-        for (int i = 0; i < blockz.length; i++) {
-            for (int j = 0; j < blockz[0].length; j++) {
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
                 if (blockz[i][j] != goal[i][j])    return false;
             }
         }
@@ -86,15 +89,15 @@ public class Board {
     }
     public String toString()               // string representation of this board (in the output format specified below)
     {
-        StringBuilder sb = new StringBuilder();
-        sb.append(dimension() + "\n");
-        for (int i = 0; i < blockz.length; i++) {
-            for (int j = 0; j < blockz[0].length; j++) {
-                sb.append(" " + blockz[i][j]);
+        StringBuilder s = new StringBuilder();
+        s.append(n + "\n");
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                s.append(String.format("%2d ", blockz[i][j]));
             }
-            sb.append("\n");
+            s.append("\n");
         }
-        return new String(sb);
+        return s.toString();
     }
     private void validate(int[][] blocks) {
         if (blocks == null)
@@ -126,7 +129,7 @@ public class Board {
         //            }
         //            System.out.println();
         //        }
-        //        System.out.println(board);
+                System.out.println(board);
 
         System.out.println("Hamming solution is " + board.hamming() + 
                 "\nManhattan solution is " + board.manhattan());
