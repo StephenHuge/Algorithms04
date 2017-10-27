@@ -1,9 +1,29 @@
-
+import edu.princeton.cs.algs4.In;
 
 public class Board {
-    public Board(int[][] blocks)           // construct a board from an n-by-n array of blocks
+    public final int[][] blockz;
+    // construct a board from an n-by-n array of blocks
     // (where blocks[i][j] = block in row i, column j)
-    {}
+    public Board(int[][] blocks)           
+    {
+        validate(blocks);
+        blockz = new int[blocks.length][blocks[0].length];
+        for (int i = 0; i < blocks.length; i++) {
+            for (int j = 0; j < blocks[0].length; j++) {
+                blockz[i][j] = blocks[i][j];
+            }
+        }
+    }
+    private void validate(int[][] blocks) {
+        if (blocks == null)
+            throw new java.lang.IllegalArgumentException();
+        for (int i = 0; i < blocks.length; i++) {
+            for (int j = 0; j < blocks[0].length; j++) {
+                if (blocks[i][j] < 0)
+                    throw new java.lang.IllegalArgumentException();
+            }
+        }
+    }
     public int dimension()                 // board dimension n
     {
         return -1;
@@ -38,5 +58,25 @@ public class Board {
     }
 
     public static void main(String[] args) // unit tests (not graded)
-    {}
+    {
+        In in = new In(args[0]);
+        int n = in.readInt();
+        int[][] blocks = new int[n][n];
+        
+        for (int i = 0; i < blocks.length; i++) {
+            for (int j = 0; j < blocks[0].length; j++) {
+                blocks[i][j] = in.readInt();
+//                System.out.print(blocks[i][j] + "\t");
+            }
+//            System.out.println();
+        }
+        Board board = new Board(blocks);
+        for (int i = 0; i < blocks.length; i++) {
+        for (int j = 0; j < blocks[0].length; j++) {
+            System.out.print(board.blockz[i][j] + "\t");
+        }
+        System.out.println();
+    }
+        
+    }
 }
