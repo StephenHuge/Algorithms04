@@ -1,7 +1,7 @@
 import edu.princeton.cs.algs4.In;
 
 public class Board {
-    public final int[][] blockz;
+    private final int[][] blockz;
     // construct a board from an n-by-n array of blocks
     // (where blocks[i][j] = block in row i, column j)
     public Board(int[][] blocks)           
@@ -26,7 +26,7 @@ public class Board {
     }
     public int dimension()                 // board dimension n
     {
-        return -1;
+        return blockz.length;
     }
     public int hamming()                   // number of blocks out of place
     {
@@ -54,7 +54,15 @@ public class Board {
     }
     public String toString()               // string representation of this board (in the output format specified below)
     {
-        return null;
+        StringBuilder sb = new StringBuilder();
+        sb.append(dimension() + "\n");
+        for (int i = 0; i < blockz.length; i++) {
+            for (int j = 0; j < blockz[0].length; j++) {
+                sb.append(" " + blockz[i][j]);
+            }
+            sb.append("\n");
+        }
+        return new String(sb);
     }
 
     public static void main(String[] args) // unit tests (not graded)
@@ -62,21 +70,21 @@ public class Board {
         In in = new In(args[0]);
         int n = in.readInt();
         int[][] blocks = new int[n][n];
-        
+
         for (int i = 0; i < blocks.length; i++) {
             for (int j = 0; j < blocks[0].length; j++) {
                 blocks[i][j] = in.readInt();
-//                System.out.print(blocks[i][j] + "\t");
+                //                System.out.print(blocks[i][j] + "\t");
             }
-//            System.out.println();
+            //            System.out.println();
         }
         Board board = new Board(blocks);
-        for (int i = 0; i < blocks.length; i++) {
-        for (int j = 0; j < blocks[0].length; j++) {
-            System.out.print(board.blockz[i][j] + "\t");
-        }
-        System.out.println();
-    }
-        
+        //        for (int i = 0; i < blocks.length; i++) {
+        //            for (int j = 0; j < blocks[0].length; j++) {
+        //                System.out.print(board.blockz[i][j] + "\t");
+        //            }
+        //            System.out.println();
+        //        }
+        System.out.println(board);
     }
 }
