@@ -63,7 +63,12 @@ public class Board {
     }
     public boolean isGoal()                // is this board the goal board?
     {
-        return false;
+        for (int i = 0; i < blockz.length; i++) {
+            for (int j = 0; j < blockz[0].length; j++) {
+                if (blockz[i][j] != goal[i][j])    return false;
+            }
+        }
+        return true;
     }
     public Board twin()                    // a board that is obtained by exchanging any pair of blocks
     {
@@ -123,5 +128,6 @@ public class Board {
 
         System.out.println("Hamming solution is " + board.hamming() + 
                 "\nManhattan solution is " + board.manhattan());
+        System.out.println("This array is goal? " + board.isGoal());
     }
 }
