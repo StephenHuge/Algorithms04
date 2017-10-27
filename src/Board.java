@@ -31,6 +31,7 @@ public class Board {
     }
     public int hamming()                   // number of blocks out of place
     {
+        if (isGoal())   return 0;
         int hamming = 0;
         for (int i = 0; i < blockz.length; i++) {
             for (int j = 0; j < blockz[0].length; j++) {
@@ -41,6 +42,7 @@ public class Board {
     }
     public int manhattan()                 // sum of Manhattan distances between blocks and goal
     {
+        if (isGoal())   return 0;
         int manhattan = 0;
         for (int i = 0; i < blockz.length; i++) {
             for (int j = 0; j < blockz[0].length; j++) {
