@@ -2,47 +2,65 @@ import java.util.Stack;
 
 import edu.princeton.cs.algs4.In;
 
-public class Board {
-    private final char[] blockz;
+public class Board implements Comparable<Board>{
+    //    private final char[] blockz;
 
-    private final char[] goal;
+    private final int[][] blockz;
+
+    private final int[][] goal;
 
     private final int n; 
 
     private final int manhattan;    // cache manhattan value of this broad
 
     private final int hamming;      // cache hamming value of this broad
+
+    private final int vacancy;            // position of vacancy block in the array blockz  
+
+    private byte lastMoveDir;          // last movement's direction of this board, 1 - 4 means up, down, left, right
+
+    private Stack<Board> neighbors; 
     
-    private int vacancy;            // position of vacancy block in the array blockz  
-    
-    private byte lastMoveDir;          // last movement's direction of this board, 1 - 4 means up, right, down, left 
+    private int moves;
 
     public Board(int[][] blocks)    // construct a board from an n-by-n array of blocks           
     {
         validate(blocks);
         n = blocks.length;
-        blockz = new char[n * n];
-        int num  = 0;
-        goal = new char[n * n];
-        lastMoveDir = 0;
+        //        blockz = new char[n * n];
+        blockz = new int[n][n];
+        goal = new int[n][n];
 
-        for (int i = 0; i < n; i++) {
-            for (int j = 0; j < n; j++) {
-                if (blocks[i][j] == 0)  vacancy = i * n + j; 
-                blockz[i * n + j] = (char) (blocks[i][j] + 48);
+        {
+            int t = 0;
+            for (int i = 0; i < n; i++) {
+                for (int j = 0; j < n; j++) {
+                    if (blocks[i][j] == 0)  t = i * n + j; 
+                    //                    blockz[i][j] = (char) (blocks[i][j] + 48);
+                    blockz[i][j] = blocks[i][j];
+                }
+            }
+            vacancy = t;
+        }
+        // can be improved to a method, waiting
+        {
+            int num  = 0;
+            for (int i = 0; i < n; i++) {
+                for (int j = 0; j < n; j++) {
+                    if (i == n - 1 && j == n - 1)   break;
+                    goal[i][j] = ++num;      // int to char
+                }
             }
         }
-        // can be improved to a method, waiting  
-        for (int i = 0; i < n; i++) {
-            for (int j = 0; j < n; j++) {
-                if (i == n - 1 && j == n - 1)   break;
-                goal[i * n + j] = (char) (++num + 48);
-            }
-        }
+        lastMoveDir = 0;
+        
         manhattan = getManhattan();
         hamming = getHamming();
     }
-
+    public int moves()
+    {
+        return moves;
+    }
     public int dimension()                 // board dimension n
     {
         return n;
@@ -74,28 +92,44 @@ public class Board {
     }
     public Iterable<Board> neighbors()     // all neighboring boards
     {
-        Stack<Board> mNeighbors = new Stack<>();
-        
+        if (neighbors == null)  neighbors = getNeighbors();    // lazy loading
+        return neighbors;
+    }
+
+    private Stack<Board> getNeighbors() {
+        Stack<Board> s = new Stack<>();
+        Board neighbor;
         int x = vacancy / n;    // axis of vacancy block, like n = 3, 5 --> (1, 2)
         int y = vacancy % n;
-        
-        if (x != 0) {       // if vacancy block is not in the first row, move upward is available
-            exch(vacancy, vacancy - n);
-            mNeighbors.push(this);
+        //        System.out.println("start vacancy is " + vacancy);
+        if (lastMoveDir != 1 && x != 0) {
+            neighbor = generateNeighbor(vacancy - n); // if vacancy block is not in the first row, move upward is available
+            s.push(neighbor);
+            lastMoveDir = 1;
+        }    
+        if (lastMoveDir != 2 && x != n - 1) {
+            neighbor = generateNeighbor(vacancy + n); // if vacancy block is not in the last row, move downward is available
+            s.push(neighbor);
+            lastMoveDir = 2;
         }
-        if (x != n - 1)  {  // if vacancy block is not in the last row, move downward is available
-            exch(vacancy, vacancy + n);
-            mNeighbors.push(this);
+        if (lastMoveDir != 3 && y != 0) {
+            neighbor = generateNeighbor(vacancy - 1); // if vacancy block is not in the first column, move leftward is available
+            s.push(neighbor);
+            lastMoveDir = 3;
         }
-        if (y != 0) {       // if vacancy block is not in the first column, move leftward is available
-            exch(vacancy, vacancy - 1);
-            mNeighbors.push(this);
+        if (lastMoveDir != 4 && y != n - 1) {
+            neighbor = generateNeighbor(vacancy + 1); // if vacancy block is not in the last column, move rightward is available
+            s.push(neighbor);
+            lastMoveDir = 4;
         }
-        if (y != n - 1)  {  // if vacancy block is not in the last column, move rightward is available
-            exch(vacancy, vacancy + 1);
-            mNeighbors.push(this);
-        }
-        return mNeighbors;
+        return s;
+    }
+    private Board generateNeighbor(int b) {
+        exch(vacancy, b);       // swap entry in vacancy and b 
+        Board neighbor = new Board(blockz);
+        neighbor.moves = moves + 1;   // this board moved one step
+        exch(b, vacancy);   // swap back for another use
+        return neighbor;
     }
     public String toString()               // string representation of this board (in the output format specified below)
     {
@@ -103,13 +137,18 @@ public class Board {
         s.append(n + "\n");
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < n; j++) {
-                s.append(String.format("%2c ", blockz[i * n + j]));
+                s.append(String.format("%2d ", blockz[i][j]));
             }
             s.append("\n");
         }
         return s.toString();
     }
-
+    @Override
+    public int compareTo(Board b) {
+        if (manhattan < b.manhattan)    return -1;
+        if (manhattan > b.manhattan)    return 1;
+        return 0;
+    }
     private void validate(int[][] blocks) {
         if (blocks == null)
             throw new java.lang.IllegalArgumentException();
@@ -125,12 +164,12 @@ public class Board {
         int mManhattan = 0;
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < n; j++) {
-                if (blockz[i * n + j] != '0') {
+                if (blockz[i][j] != 0) {
 
                     // e.g.: 5 is in (0, 0)
                     // 5 - 1 = 4, x = 4 / 3 - 0 = 1, y = 4 % 3 - 0 = 1
                     // so manhattan distance of 5 is 1 + 1 = 2
-                    int node = blockz[i * n + j] - 48 - 1;
+                    int node = blockz[i][j] - 1;
                     int x = node / 3 - i;        
                     int y = node % 3 - j;
 
@@ -147,7 +186,7 @@ public class Board {
         int mHamming = 0;
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < n; j++) {
-                if (blockz[i * n + j] != '0' && blockz[i * n + j] != goal[i * n + j])    mHamming++;
+                if (blockz[i][j] != 0 && blockz[i][j] != goal[i][j])    mHamming++;
             }
         }
         return mHamming;
@@ -156,18 +195,18 @@ public class Board {
      * this method is just for verifying whether 2 arrays is equal, we **don't** offer validation
      * for these two's length
      */
-    private boolean isArrayEqual(char[] a, char[] b) {
+    private boolean isArrayEqual(int[][] a, int[][] b) {
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < n; j++) {
-                if (a[i * n + j] != b[i * n + j])    return false;
+                if (a[i][j] != b[i][j])    return false;
             }
         }
         return true;
     }
     private void exch(int a, int b) {
-        char t = blockz[a];
-        blockz[a] = blockz[b];
-        blockz[b] = t;
+        int t = blockz[a / n][a % n];
+        blockz[a / n][a % n] = blockz[b / n][b % n];
+        blockz[b / n][b % n] = t;
     }
     public static void main(String[] args) // unit tests (not graded)
     {
@@ -178,22 +217,27 @@ public class Board {
         for (int i = 0; i < blocks.length; i++) {
             for (int j = 0; j < blocks[0].length; j++) {
                 blocks[i][j] = in.readInt();
-                //                                        System.out.print(blocks[i][j] + "\t");
             }
-            //                                System.out.println();
         }
         Board board = new Board(blocks);
-        for (int i = 0; i < blocks.length; i++) {
-            for (int j = 0; j < blocks[0].length; j++) {
-                System.out.print(board.blockz[i * n + j] + "\t");
-            }
-            System.out.println();
-        }
-        System.out.println(board);
-
-        System.out.println("Hamming solution is " + board.hamming() + 
-                "\nManhattan solution is " + board.manhattan() + 
-                "\nvacancy position is " + board.vacancy);
-        System.out.println("This array is goal? " + board.isGoal());
+        //        for (int i = 0; i < blocks.length; i++) {
+        //            for (int j = 0; j < blocks[0].length; j++) {
+        //                System.out.print(board.blockz[i][j] + "\t");
+        //            }
+        //            System.out.println();
+        //        }
+                System.out.println(board);
+        //
+        //        System.out.println("Hamming solution is " + board.hamming() + 
+        //                "\nManhattan solution is " + board.manhattan() + 
+        //                "\nvacancy position is " + board.vacancy);
+        //        System.out.println("This array is goal? " + board.isGoal());
+        //
+        //        System.out.println("This board's neighbors:");
+        //        for (Board b : board.neighbors())
+        //            System.out.println(b);
+        Iterable<Board> it = board.getNeighbors();
+        for (Board b : it)
+            System.out.println(b);
     }
 }
