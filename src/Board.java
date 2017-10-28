@@ -1,3 +1,5 @@
+import java.util.Stack;
+
 import edu.princeton.cs.algs4.In;
 
 public class Board {
@@ -7,7 +9,13 @@ public class Board {
 
     private final int n; 
 
-    private final int manhattan;    // cache manhattan value of this broad 
+    private final int manhattan;    // cache manhattan value of this broad
+
+    private final int hamming;      // cache hamming value of this broad
+    
+    private int vacancy;            // position of vacancy block in the array blockz  
+    
+    private byte lastMoveDir;          // last movement's direction of this board, 1 - 4 means up, right, down, left 
 
     public Board(int[][] blocks)    // construct a board from an n-by-n array of blocks           
     {
@@ -16,15 +24,14 @@ public class Board {
         blockz = new char[n * n];
         int num  = 0;
         goal = new char[n * n];
+        lastMoveDir = 0;
 
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < n; j++) {
+                if (blocks[i][j] == 0)  vacancy = i * n + j; 
                 blockz[i * n + j] = (char) (blocks[i][j] + 48);
             }
         }
-
-        manhattan = getManhattan();
-
         // can be improved to a method, waiting  
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < n; j++) {
@@ -32,6 +39,8 @@ public class Board {
                 goal[i * n + j] = (char) (++num + 48);
             }
         }
+        manhattan = getManhattan();
+        hamming = getHamming();
     }
 
     public int dimension()                 // board dimension n
@@ -40,13 +49,6 @@ public class Board {
     }
     public int hamming()                   // number of blocks out of place
     {
-        if (isGoal())   return 0;
-        int hamming = 0;
-        for (int i = 0; i < n; i++) {
-            for (int j = 0; j < n; j++) {
-                if (blockz[i * n + j] != '0' && blockz[i * n + j] != goal[i * n + j])    hamming++;
-            }
-        }
         return hamming;
     }
     public int manhattan()                 // sum of Manhattan distances between blocks and goal
@@ -72,7 +74,28 @@ public class Board {
     }
     public Iterable<Board> neighbors()     // all neighboring boards
     {
-        return null;
+        Stack<Board> mNeighbors = new Stack<>();
+        
+        int x = vacancy / n;    // axis of vacancy block, like n = 3, 5 --> (1, 2)
+        int y = vacancy % n;
+        
+        if (x != 0) {       // if vacancy block is not in the first row, move upward is available
+            exch(vacancy, vacancy - n);
+            mNeighbors.push(this);
+        }
+        if (x != n - 1)  {  // if vacancy block is not in the last row, move downward is available
+            exch(vacancy, vacancy + n);
+            mNeighbors.push(this);
+        }
+        if (y != 0) {       // if vacancy block is not in the first column, move leftward is available
+            exch(vacancy, vacancy - 1);
+            mNeighbors.push(this);
+        }
+        if (y != n - 1)  {  // if vacancy block is not in the last column, move rightward is available
+            exch(vacancy, vacancy + 1);
+            mNeighbors.push(this);
+        }
+        return mNeighbors;
     }
     public String toString()               // string representation of this board (in the output format specified below)
     {
@@ -86,6 +109,7 @@ public class Board {
         }
         return s.toString();
     }
+
     private void validate(int[][] blocks) {
         if (blocks == null)
             throw new java.lang.IllegalArgumentException();
@@ -118,6 +142,16 @@ public class Board {
         }
         return mManhattan;
     }
+    private int getHamming() {
+        if (isGoal())   return 0;
+        int mHamming = 0;
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                if (blockz[i * n + j] != '0' && blockz[i * n + j] != goal[i * n + j])    mHamming++;
+            }
+        }
+        return mHamming;
+    }
     /**
      * this method is just for verifying whether 2 arrays is equal, we **don't** offer validation
      * for these two's length
@@ -130,19 +164,24 @@ public class Board {
         }
         return true;
     }
+    private void exch(int a, int b) {
+        char t = blockz[a];
+        blockz[a] = blockz[b];
+        blockz[b] = t;
+    }
     public static void main(String[] args) // unit tests (not graded)
     {
         In in = new In(args[0]);
         int n = in.readInt();
         int[][] blocks = new int[n][n];
 
-                for (int i = 0; i < blocks.length; i++) {
-                    for (int j = 0; j < blocks[0].length; j++) {
-                        blocks[i][j] = in.readInt();
-//                                        System.out.print(blocks[i][j] + "\t");
-                    }
-//                                System.out.println();
-                }
+        for (int i = 0; i < blocks.length; i++) {
+            for (int j = 0; j < blocks[0].length; j++) {
+                blocks[i][j] = in.readInt();
+                //                                        System.out.print(blocks[i][j] + "\t");
+            }
+            //                                System.out.println();
+        }
         Board board = new Board(blocks);
         for (int i = 0; i < blocks.length; i++) {
             for (int j = 0; j < blocks[0].length; j++) {
@@ -150,10 +189,11 @@ public class Board {
             }
             System.out.println();
         }
-                System.out.println(board);
-        
-                System.out.println("Hamming solution is " + board.hamming() + 
-                        "\nManhattan solution is " + board.manhattan());
-                System.out.println("This array is goal? " + board.isGoal());
+        System.out.println(board);
+
+        System.out.println("Hamming solution is " + board.hamming() + 
+                "\nManhattan solution is " + board.manhattan() + 
+                "\nvacancy position is " + board.vacancy);
+        System.out.println("This array is goal? " + board.isGoal());
     }
 }
