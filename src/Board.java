@@ -4,8 +4,10 @@ public class Board {
     private final int[][] blockz;
 
     private final int[][] goal;
-    
+
     private final int n; 
+
+    private final int manhattan;    // cache manhattan value of this broad 
 
     public Board(int[][] blocks)    // construct a board from an n-by-n array of blocks           
     {
@@ -20,6 +22,10 @@ public class Board {
                 blockz[i][j] = blocks[i][j];
             }
         }
+
+        manhattan = getManhattan();
+
+        // can be improved to a method, waiting  
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < n; j++) {
                 if (i == n - 1 && j == n - 1)   break;
@@ -45,8 +51,11 @@ public class Board {
     }
     public int manhattan()                 // sum of Manhattan distances between blocks and goal
     {
+        return manhattan;
+    }
+    private int getManhattan() {
         if (isGoal())   return 0;
-        int manhattan = 0;
+        int mManhattan = 0;
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < n; j++) {
                 if (blockz[i][j] != 0) {
@@ -60,20 +69,16 @@ public class Board {
 
                     int xDistance = x > 0 ? x : -x;     // make sure x distance is positive
                     int yDistance = y > 0 ? y : -y;     // make sure y distance is positive
-                    manhattan += xDistance + yDistance;
+                    mManhattan += xDistance + yDistance;
                 }
             }
         }
-        return manhattan;
+        return mManhattan;
     }
+
     public boolean isGoal()                // is this board the goal board?
     {
-        for (int i = 0; i < n; i++) {
-            for (int j = 0; j < n; j++) {
-                if (blockz[i][j] != goal[i][j])    return false;
-            }
-        }
-        return true;
+        return isArrayEqual(blockz, goal);
     }
     public Board twin()                    // a board that is obtained by exchanging any pair of blocks
     {
@@ -81,7 +86,24 @@ public class Board {
     }
     public boolean equals(Object y)        // does this board equal y?
     {
-        return false;
+        if (y == this)  return true;
+        if (y == null)  return false;
+        if (y.getClass() != this.getClass())    return false;
+
+        Board b = (Board) y;
+        return isArrayEqual(this.blockz, b.blockz);
+    }
+    /**
+     * this method is just for verifying whether 2 arrays is equal, we **don't** offer validation
+     * for these two's length
+     */
+    private boolean isArrayEqual(int[][] a, int[][] b) {
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                if (a[i][j] != b[i][j])    return false;
+            }
+        }
+        return true;
     }
     public Iterable<Board> neighbors()     // all neighboring boards
     {
@@ -129,7 +151,7 @@ public class Board {
         //            }
         //            System.out.println();
         //        }
-                System.out.println(board);
+        System.out.println(board);
 
         System.out.println("Hamming solution is " + board.hamming() + 
                 "\nManhattan solution is " + board.manhattan());
