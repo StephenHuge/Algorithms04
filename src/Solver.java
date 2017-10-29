@@ -13,13 +13,13 @@ public class Solver {
         MinPQ<Board> minPQ = new MinPQ<>(new Comparator<Board>() {
             @Override
             public int compare(Board b1, Board b2) {
-                if (b1.manhattan() + b1.moves() < b2.manhattan() + b2.moves())    return -1;
-                if (b1.manhattan() + b1.moves() > b2.manhattan() + b2.moves())    return 1;
-                else {
-                    if (b1.manhattan() < b2.manhattan())    return -1;
-                    if (b1.manhattan() > b2.manhattan())    return 1;
-                    return 0;
-                }
+                //                if (b1.manhattan() + b1.moves < b2.manhattan() + b2.moves)    return -1;
+                //                if (b1.manhattan() + b1.moves > b2.manhattan() + b2.moves)    return 1;
+                //                else {
+                //                    if (b1.manhattan() < b2.manhattan())    return -1;
+                //                    if (b1.manhattan() > b2.manhattan())    return 1;
+                return 0;
+                //                }
             }
 
         });
@@ -28,23 +28,25 @@ public class Solver {
         //        System.err.println("init is : " + initial);
         Board board = minPQ.delMin();
         Iterable<Board> it;
-
+        int count = 0;
         while (!board.isGoal()) {
+            count++;
             it = board.neighbors();
             for (Board b : it) {
                 minPQ.insert(b);
             }
             board = minPQ.delMin();
-            if (board.manhattan() + board.moves() <= solution.peek().manhattan() + board.moves()) {
-                //                System.out.println(String.format("priority is %d, manhattan is %d " + 
-                //                        "moves is %d \n" +   
-                //                        "insert min: \n%s ", 
-                //                        board.manhattan() + board.moves(), board.manhattan(), board.moves(), board.toString()));
+            //            if (board.manhattan() + board.moves <= solution.peek().manhattan() + board.moves) {
+            //                                System.out.println(String.format("priority is %d, manhattan is %d " + 
+            //                                        "moves is %d \n" +   
+            //                                        "insert min: \n%s ", 
+            //                                        board.manhattan() + board.moves(), board.manhattan(), board.moves(), board.toString()));
 
-                solution.push(board);
-            }
+            solution.push(board);
         }
-        moves = board.moves();
+        //        }
+        //        moves = board.moves;
+        System.out.println("count is " + count);
     }
     public boolean isSolvable()            // is the initial board solvable?
     {
