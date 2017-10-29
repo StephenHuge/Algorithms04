@@ -2,7 +2,7 @@ import java.util.Stack;
 
 import edu.princeton.cs.algs4.In;
 
-public class Board implements Comparable<Board>{
+public class Board {
     //    private final char[] blockz;
 
     private final int[][] blockz;
@@ -21,8 +21,6 @@ public class Board implements Comparable<Board>{
 
     private Stack<Board> neighbors; 
     
-    private int moves;
-
     public Board(int[][] blocks)    // construct a board from an n-by-n array of blocks           
     {
         validate(blocks);
@@ -56,10 +54,6 @@ public class Board implements Comparable<Board>{
         
         manhattan = getManhattan();
         hamming = getHamming();
-    }
-    public int moves()
-    {
-        return moves;
     }
     public int dimension()                 // board dimension n
     {
@@ -127,7 +121,7 @@ public class Board implements Comparable<Board>{
     private Board generateNeighbor(int b) {
         exch(vacancy, b);       // swap entry in vacancy and b 
         Board neighbor = new Board(blockz);
-        neighbor.moves = moves + 1;   // this board moved one step
+//        neighbor.moves = moves + 1;   // this board moved one step
         exch(b, vacancy);   // swap back for another use
         return neighbor;
     }
@@ -142,12 +136,6 @@ public class Board implements Comparable<Board>{
             s.append("\n");
         }
         return s.toString();
-    }
-    @Override
-    public int compareTo(Board b) {
-        if (manhattan < b.manhattan)    return -1;
-        if (manhattan > b.manhattan)    return 1;
-        return 0;
     }
     private void validate(int[][] blocks) {
         if (blocks == null)
