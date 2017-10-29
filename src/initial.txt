@@ -1,3 +1,5 @@
+puzzle00.txt
+puzzle01.txt
 puzzle3x3-00.txt
 puzzle3x3-01.txt
 puzzle3x3-02.txt
