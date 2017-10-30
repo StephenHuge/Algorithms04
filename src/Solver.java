@@ -1,8 +1,7 @@
 import java.util.Comparator;
-
 import edu.princeton.cs.algs4.In;
 import edu.princeton.cs.algs4.MinPQ;
-import edu.princeton.cs.algs4.Queue;
+import edu.princeton.cs.algs4.Stack;
 import edu.princeton.cs.algs4.StdOut;
 
 public class Solver {
@@ -11,36 +10,51 @@ public class Solver {
 
     private boolean solvable = false;
 
-    private Queue<Board> solution = null;
+    private Stack<Board> solution = null;
 
     public Solver(Board initial)           // find a solution to the initial board (using the A* algorithm)
     {
         moves = 0;
         MinPQ<Priority> minPQ = new MinPQ<>(new PriorityComparator());
-        Priority min = new Priority(initial, 0);
+        Priority min = new Priority(initial, 0, null);
         minPQ.insert(min);      // min is not the ans, insert it
-        solution = new Queue<>();
-        Iterable<Board> it = null;
-        
-        while (true) {
-            min = minPQ.delMin();   // find the smallest one
-//          System.out.println(min.board);
-//          System.out.println("priority: " + min.getPriority() +
-//                             ", manhattan: " + min.board.manhattan() +
-//                             ", moves: " +min.moves + " ");
-          if (min.board.isGoal()) {   // get ans
-              solvable = true;
-              solution.enqueue(min.board);
-              moves = min.moves;
-              break;
-          } 
-          /*******************insert neighbors*************************/
-          it = min.board.neighbors(); // get smallest one's neighbors
-          for (Board b : it) {
-              minPQ.insert(new Priority(b, min.moves + 1));
-          }
-          /*******************insert neighbors*************************/
+        solution = new Stack<>();
+
+        min = solve(minPQ, min, true);
+        if (!solvable) {
+            min = solve(minPQ, new Priority(initial.twin(), 0, null), false);
         }
+        
+        Priority sol = min;
+        while (sol != null) {
+            solution.push(sol.board);
+            sol = sol.father;
+        }
+    }
+    private Priority solve(MinPQ<Priority> minPQ, Priority min, boolean mSolvable) {
+        int count = 0;
+        while (true) {
+            count++;
+            if (count > 99999999)   break;
+            min = minPQ.delMin();   // find the smallest one
+            //            System.out.println(min.board);
+            //            System.out.println("priority: " + min.getPriority() +
+            //                    ", manhattan: " + min.board.manhattan() +
+            //                    ", moves: " +min.moves + " ");
+            if (min.board.isGoal()) {   // get ans
+                solvable = mSolvable;
+                moves = min.moves;
+                break;
+            } 
+
+            /*******************insert neighbors*************************/
+            Iterable<Board> it = min.board.neighbors(); // get smallest one's neighbors
+            for (Board b : it) {
+                minPQ.insert(new Priority(b, min.moves + 1, min));
+            }
+            /*******************insert neighbors*************************/
+        }
+        return min;
     }
     public boolean isSolvable()            // is the initial board solvable?
     {
@@ -63,6 +77,10 @@ public class Solver {
             else {
                 if (p1.board.manhattan() < p2.board.manhattan())    return -1;
                 if (p1.board.manhattan() > p2.board.manhattan())    return 1;
+                else {
+                    if (p1.board.hamming() < p2.board.hamming())    return -1;
+                    if (p1.board.hamming() > p2.board.hamming())    return 1;
+                }
                 return 0;
             }
         }
@@ -72,10 +90,12 @@ public class Solver {
         Board board;
         int moves;
         int priority;
-        Priority(Board mBoard, int mMoves) {
+        Priority father;
+        Priority(Board mBoard, int mMoves, Priority mFather) {
             this.board = mBoard;
             this.moves = mMoves;
             this.priority = board.manhattan() + moves;
+            this.father = mFather;
         }
         int getPriority() {
             return priority; 

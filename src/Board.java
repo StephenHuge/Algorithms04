@@ -19,11 +19,11 @@ public class Board {
     
     private final int UPWARD = 1;
     
-    private final int DOWNWARD = 2;
+    private final int DOWNWARD = -1;
     
-    private final int LEFTWARD = 3;
+    private final int LEFTWARD = 2;
     
-    private final int RIGHTWARD = 4;
+    private final int RIGHTWARD = -2;
 
     public Board(int[][] blocks)           // construct a board from an n-by-n array of blocks
     {
@@ -52,7 +52,16 @@ public class Board {
     }
     public Board twin()                    // a board that is obtained by exchanging any pair of blocks
     {
-        return null;
+        int p1 = 0;
+        int p2 = 0;
+        while (blockz[p1] == '0' || blockz[p2] == '0') {
+            if (p1 == p2)   p1++;
+            p2++;
+        }
+        exch(p1, p2);       // swap entry by indexes
+        Board twin = new Board(getArray(blockz));
+        exch(p2, p1);   // swap back for another use    
+        return twin;
     }
     public boolean equals(Object y)        // does this board equal y?
     {
