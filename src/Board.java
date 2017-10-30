@@ -85,7 +85,7 @@ public class Board {
         s.append(n + "\n");
         int len = n * n;
         for (int i = 0; i < len; i++) {
-            s.append(String.format("%2c ", blockz[i]));
+            s.append(String.format("%2d ", (int) blockz[i] - 48));
             if ((i + 1) % n == 0)   s.append("\n");
         }
         return s.toString();
@@ -148,7 +148,7 @@ public class Board {
     }
     private boolean isArrayEqual(char[] c1, char[] c2) {
         if (c1 == null || c2 == null || c1.length != c2.length)
-            throw new IllegalArgumentException();
+                return false;
         int len = c1.length;
         for (int i = 0; i < len; i++) {
             if (c1[i] - c2[i] != 0)     return false;
@@ -245,27 +245,27 @@ public class Board {
         System.out.println("board.vacancy: " + board.vacancy);  
         /************test copy()******************/
         char[] blockz = board.blockz;
-        System.out.print("char array: ");
-        for (int i = 0; i < blockz.length; i++) {
-            System.out.print(blockz[i] + " ");
-        }
-        System.out.println();
-        /************test hamming()******************/
-        System.out.println("hamming :　" + board.hamming());
-        /************test manhattan()******************/
-        System.out.println("manhattan :　" + board.manhattan());
+//        System.out.print("char array: ");
+//        for (int i = 0; i < blockz.length; i++) {
+//            System.out.print(blockz[i] + " ");
+//        }
+//        System.out.println();
+//        /************test hamming()******************/
+//        System.out.println("hamming :　" + board.hamming());
+//        /************test manhattan()******************/
+//        System.out.println("manhattan :　" + board.manhattan());
         /************test toString()******************/
-        System.out.println(board);
+        System.out.println(board.toString());
         /************test isArrayEqual()******************/
-        System.out.println("isArrayEqual : " + board.isArrayEqual(board.blockz, board.blockz));
-        /************test neighbor()******************/
-        Iterable<Board> it = board.neighbors();
-        System.out.println("neighbors: ");
-        for (Board b : it) {
-            System.out.println("last move direction : " + b.lastMoveDirection);
-            System.out.println(b);
-        }
-        /************test neighbor()******************/
+//        System.out.println("isArrayEqual : " + board.isArrayEqual(board.blockz, board.blockz));
+//        /************test neighbor()******************/
+//        Iterable<Board> it = board.neighbors();
+//        System.out.println("neighbors: ");
+//        for (Board b : it) {
+//            System.out.println("last move direction : " + b.lastMoveDirection);
+//            System.out.println(b);
+//        }
+//        /************test neighbor()******************/
         
     }
 }
