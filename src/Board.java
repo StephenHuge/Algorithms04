@@ -17,13 +17,13 @@ public class Board {
     
     private int lastMoveDirection = 0;
     
-    private final int UP = 1;
+    private final int UPWARD = 1;
     
-    private final int DOWN = 2;
+    private final int DOWNWARD = 2;
     
-    private final int LEFT = 3;
+    private final int LEFTWARD = 3;
     
-    private final int RIGHT = 4;
+    private final int RIGHTWARD = 4;
 
     public Board(int[][] blocks)           // construct a board from an n-by-n array of blocks
     {
@@ -66,8 +66,7 @@ public class Board {
     public Iterable<Board> neighbors()     // all neighboring boards
     {
         if (neighbors == null) {
-            neighbors = new Queue<>();
-            generateNeighbors(neighbors);
+            neighbors = generateNeighbors();
         }
         return neighbors;
     }
@@ -147,33 +146,86 @@ public class Board {
         }
         return true;
     }
-    private void generateNeighbors(Queue<Board> mNeighbors) {
-        mNeighbors = new Queue<>();
+    private Queue<Board> generateNeighbors() {
+        Queue<Board> mNeighbors = new Queue<>();
         int x = vacancy / n;    // axis of vacancy block, like n = 3, 5 --> (1, 2)
         int y = vacancy % n;
 
-        if (x != 0) {       // if vacancy block is not in the first row, move upward is available
-            exch(vacancy, vacancy - n);
-            mNeighbors.push(this);
-        }
-        if (x != n - 1)  {  // if vacancy block is not in the last row, move downward is available
-            exch(vacancy, vacancy + n);
-            mNeighbors.push(this);
-        }
-        if (y != 0) {       // if vacancy block is not in the first column, move leftward is available
-            exch(vacancy, vacancy - 1);
-            mNeighbors.push(this);
-        }
-        if (y != n - 1)  {  // if vacancy block is not in the last column, move rightward is available
-            exch(vacancy, vacancy + 1);
-            mNeighbors.push(this);
-        }
-        return mNeighbors;
-
-    }
-    private void exch(int vacancy2, int i) {
-        // TODO Auto-generated method stub
+        Board neighbor;
         
+        if (lastMoveDirection != UPWARD && x != 0) {      
+            neighbor = generateNeighbor(DOWNWARD);
+            mNeighbors.enqueue(neighbor);
+        }
+        if (lastMoveDirection != DOWNWARD && x != n - 1) {       
+            neighbor = generateNeighbor(UPWARD);
+            mNeighbors.enqueue(neighbor);
+        }
+        if (lastMoveDirection != LEFTWARD && y != 0) {       
+            neighbor = generateNeighbor(RIGHTWARD);
+            mNeighbors.enqueue(neighbor);
+        }
+        if (lastMoveDirection != RIGHTWARD && y != n - 1) {       
+            neighbor = generateNeighbor(LEFTWARD);
+            mNeighbors.enqueue(neighbor);
+        }
+         return mNeighbors;   
+        /*if (x != 0) {   // if vacancy block is not in the first row, move upward is available
+            neighbor = generateNeighbor(vacancy - n); 
+            mNeighbors.enqueue(neighbor);
+        }    
+        if (lastMoveDirection != DOWNWARD && x != n - 1) {
+            neighbor = generateNeighbor(vacancy + n); // if vacancy block is not in the last row, move downward is available
+            mNeighbors.enqueue(neighbor);
+        }
+        if (lastMoveDirection != LEFTWARD && y != 0) {
+            neighbor = generateNeighbor(vacancy - 1); // if vacancy block is not in the first column, move leftward is available
+            mNeighbors.enqueue(neighbor);
+        }
+        if (lastMoveDirection != RIGHTWARD && y != n - 1) {
+            neighbor = generateNeighbor(vacancy + 1); // if vacancy block is not in the last column, move rightward is available
+            
+            mNeighbors.enqueue(neighbor);
+        }*/
+    }
+    private Board generateNeighbor(int dir) {
+        Board neighbor = null;
+        if (dir == UPWARD) {
+            exch(vacancy, vacancy + n);       // swap entry in vacancy and its upper
+            neighbor = new Board(getArray(blockz));
+            neighbor.lastMoveDirection = UPWARD;
+            exch(vacancy + n, vacancy);   // swap back for another use    
+        } else if (dir == DOWNWARD) {
+            exch(vacancy, vacancy - n);   
+            neighbor = new Board(getArray(blockz));
+            neighbor.lastMoveDirection = DOWNWARD;
+            exch(vacancy - n, vacancy);   
+        } else if (dir == LEFTWARD) {
+            exch(vacancy, vacancy + 1);   
+            neighbor = new Board(getArray(blockz));
+            neighbor.lastMoveDirection = LEFTWARD;
+            exch(vacancy + 1, vacancy);   
+        } else if (dir == RIGHTWARD) {
+            exch(vacancy, vacancy - 1);       
+            neighbor = new Board(getArray(blockz));
+            neighbor.lastMoveDirection = RIGHTWARD;
+            exch(vacancy - 1, vacancy);   
+        } 
+        return neighbor;
+    }
+    private int[][] getArray(char[] mBlockz) {
+        int[][] blocks = new int[n][n];
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                blocks[i][j] = (int) (mBlockz[i * n + j] - 48);
+            }
+        }
+        return blocks;
+    }
+    private void exch(int a, int b) {
+        char t = blockz[a];
+        blockz[a] = blockz[b];
+        blockz[b] = t;
     }
     private char[] copy(int[][] blocks) {
         char[] copy = new char[n * n];
@@ -214,7 +266,14 @@ public class Board {
         System.out.println(board);
         /************test isArrayEqual()******************/
         System.out.println("isArrayEqual : " + board.isArrayEqual(board.blockz, board.blockz));
-        /************test isArrayEqual()******************/
+        /************test neighbor()******************/
+        Iterable<Board> it = board.neighbors();
+        System.out.println("neighbors: ");
+        for (Board b : it) {
+            System.out.println("last move direction : " + b.lastMoveDirection);
+            System.out.println(b);
+        }
+        /************test neighbor()******************/
         
     }
 }
