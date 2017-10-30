@@ -1,21 +1,42 @@
+import edu.princeton.cs.algs4.Queue;
+
 public class Board {
+
+    private final int n;
+
+    private final int hamming;
+
+    private final int manhattan;
+
+    private final Object blockz;
+
+    private Queue<Board> neighbors;
+
+    private final int vacancy;
+    
     public Board(int[][] blocks)           // construct a board from an n-by-n array of blocks
-    {}
+    {
+        vacancy = validate(blocks);
+        n = blocks.length;
+        hamming = getHamming();
+        manhattan = getManhattan();
+        blockz = copy(blocks);
+    }
     public int dimension()                 // board dimension n
     {
-        return -1;
+        return n;
     }
     public int hamming()                   // number of blocks out of place
     {
-        return -1;
+        return hamming;
     }
     public int manhattan()                 // sum of Manhattan distances between blocks and goal
     {
-        return -1;
+        return manhattan;
     }
     public boolean isGoal()                // is this board the goal board?
     {
-        return false;
+        return manhattan() == 0;
     }
     public Board twin()                    // a board that is obtained by exchanging any pair of blocks
     {
@@ -23,17 +44,57 @@ public class Board {
     }
     public boolean equals(Object y)        // does this board equal y?
     {
-        return false;
+        if (y == this)  return true;
+        if (y == null)  return false;
+        if (y.getClass() != this.getClass())    return false;
+
+        Board b = (Board) y;
+        return isArrayEqual(this.blockz, b.blockz);
     }
     public Iterable<Board> neighbors()     // all neighboring boards
     {
-        return null;
+        if (neighbors == null) {
+            neighbors = new Queue<>();
+            generateNeighbors(neighbors);
+        }
+        return neighbors;
     }
     public String toString()               // string representation of this board (in the output format specified below)
     {
+        StringBuilder s = new StringBuilder();
+        s.append(n + "\n");
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                //                s.append(String.format("%2c ", blockz[i * n + j]));
+            }
+            s.append("\n");
+        }
+        return s.toString();
+    }
+    private int validate(int[][] blocks) {
+        // TODO Auto-generated method stub
+        return -1;
+    }
+    private int getManhattan() {
+        // TODO Auto-generated method stub
+        return 0;
+    }
+    private int getHamming() {
+        // TODO Auto-generated method stub
+        return 0;
+    }
+    private boolean isArrayEqual(Object blockz2, Object blockz3) {
+        // TODO Auto-generated method stub
+        return false;
+    }
+    private void generateNeighbors(Queue<Board> mNeighbors) {
+        // TODO Auto-generated method stub
+
+    }
+    private Object copy(int[][] blocks) {
+        // TODO Auto-generated method stub
         return null;
     }
-
     public static void main(String[] args) // unit tests (not graded)
     {}
 }
@@ -109,10 +170,10 @@ public boolean equals(Object y)        // does this board equal y?
 public Iterable<Board> neighbors()     // all neighboring boards
 {
     Stack<Board> mNeighbors = new Stack<>();
-    
+
     int x = vacancy / n;    // axis of vacancy block, like n = 3, 5 --> (1, 2)
     int y = vacancy % n;
-    
+
     if (x != 0) {       // if vacancy block is not in the first row, move upward is available
         exch(vacancy, vacancy - n);
         mNeighbors.push(this);
@@ -186,7 +247,7 @@ private int getHamming() {
     }
     return mHamming;
 }
-*//**
+ *//**
  * this method is just for verifying whether 2 arrays is equal, we **don't** offer validation
  * for these two's length
  *//*
@@ -230,4 +291,4 @@ public static void main(String[] args) // unit tests (not graded)
             "\nvacancy position is " + board.vacancy);
     System.out.println("This array is goal? " + board.isGoal());
 }
-*/
+  */
