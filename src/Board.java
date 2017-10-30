@@ -65,11 +65,10 @@ public class Board {
     {
         StringBuilder s = new StringBuilder();
         s.append(n + "\n");
-        for (int i = 0; i < n; i++) {
-            for (int j = 0; j < n; j++) {
-                //                s.append(String.format("%2c ", blockz[i * n + j]));
-            }
-            s.append("\n");
+        int len = n * n;
+        for (int i = 0; i < len; i++) {
+            s.append(String.format("%2c ", blockz[i]));
+            if ((i + 1) % n == 0)   s.append("\n");
         }
         return s.toString();
     }
@@ -113,7 +112,7 @@ public class Board {
                 x = x > 0 ? x : -x;     // make sure x distance is positive
                 y = y > 0 ? y : -y;     // make sure y distance is positive
                 mManhattan += (x + y);
-//                System.out.println(String.format("manhattan of %d is %d", node + 1, (x + y)) );
+                //                System.out.println(String.format("manhattan of %d is %d", node + 1, (x + y)) );
             }
         }
         return mManhattan;
@@ -172,7 +171,9 @@ public class Board {
         System.out.println("hamming :　" + board.hamming());
         /************test manhattan()******************/
         System.out.println("manhattan :　" + board.manhattan());
-        /************test manhattan()******************/
+        /************test toString()******************/
+        System.out.println(board);
+        /************test toString()******************/
     }
 }
 /*private final char[] blockz;
