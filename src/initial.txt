@@ -1,5 +1,1 @@
-puzzle3x3-27.txt
-puzzle3x3-28.txt
-puzzle3x3-29.txt
-puzzle3x3-30.txt
-puzzle3x3-31.txt
+puzzle36.txt
