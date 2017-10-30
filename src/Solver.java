@@ -20,26 +20,27 @@ public class Solver {
         Priority min = new Priority(initial, 0);
         minPQ.insert(min);      // min is not the ans, insert it
         solution = new Queue<>();
+        Iterable<Board> it = null;
         
-        getSolution(minPQ, solution); 
-    }
-    private void getSolution(MinPQ<Priority> minPQ, Queue<Board> solution) {
-        Priority min = minPQ.delMin();   // find the smallest one
-        System.out.println(min.board);
-        if (min.board.isGoal()) {   // get ans
-            solvable = true;
-            solution.enqueue(min.board);
-            moves = min.moves;
-            return;
-        } 
-        /*******************insert neighbors*************************/
-        Iterable<Board> it = min.board.neighbors(); // get smallest one's neighbors
-        moves++;
-        for (Board b : it) {
-            minPQ.insert(new Priority(b, moves));
+        while (true) {
+            min = minPQ.delMin();   // find the smallest one
+//          System.out.println(min.board);
+//          System.out.println("priority: " + min.getPriority() +
+//                             ", manhattan: " + min.board.manhattan() +
+//                             ", moves: " +min.moves + " ");
+          if (min.board.isGoal()) {   // get ans
+              solvable = true;
+              solution.enqueue(min.board);
+              moves = min.moves;
+              break;
+          } 
+          /*******************insert neighbors*************************/
+          it = min.board.neighbors(); // get smallest one's neighbors
+          for (Board b : it) {
+              minPQ.insert(new Priority(b, min.moves + 1));
+          }
+          /*******************insert neighbors*************************/
         }
-        /*******************insert neighbors*************************/
-        getSolution(minPQ, solution);
     }
     public boolean isSolvable()            // is the initial board solvable?
     {
@@ -70,12 +71,14 @@ public class Solver {
     private class Priority {
         Board board;
         int moves;
+        int priority;
         Priority(Board mBoard, int mMoves) {
             this.board = mBoard;
             this.moves = mMoves;
+            this.priority = board.manhattan() + moves;
         }
         int getPriority() {
-            return board.manhattan() + moves;
+            return priority; 
         }
     }
     public static void main(String[] args) // solve a slider puzzle (given below)
