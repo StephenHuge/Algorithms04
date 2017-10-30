@@ -14,6 +14,16 @@ public class Board {
     private Queue<Board> neighbors;
 
     private final int vacancy;
+    
+    private int lastMoveDirection = 0;
+    
+    private final int UP = 1;
+    
+    private final int DOWN = 2;
+    
+    private final int LEFT = 3;
+    
+    private final int RIGHT = 4;
 
     public Board(int[][] blocks)           // construct a board from an n-by-n array of blocks
     {
@@ -128,13 +138,42 @@ public class Board {
         }
         return mHamming;
     }
-    private boolean isArrayEqual(Object blockz2, Object blockz3) {
-        // TODO Auto-generated method stub
-        return false;
+    private boolean isArrayEqual(char[] c1, char[] c2) {
+        if (c1 == null || c2 == null || c1.length != c2.length)
+            throw new IllegalArgumentException();
+        int len = c1.length;
+        for (int i = 0; i < len; i++) {
+            if (c1[i] - c2[i] != 0)     return false;
+        }
+        return true;
     }
     private void generateNeighbors(Queue<Board> mNeighbors) {
-        // TODO Auto-generated method stub
+        mNeighbors = new Queue<>();
+        int x = vacancy / n;    // axis of vacancy block, like n = 3, 5 --> (1, 2)
+        int y = vacancy % n;
 
+        if (x != 0) {       // if vacancy block is not in the first row, move upward is available
+            exch(vacancy, vacancy - n);
+            mNeighbors.push(this);
+        }
+        if (x != n - 1)  {  // if vacancy block is not in the last row, move downward is available
+            exch(vacancy, vacancy + n);
+            mNeighbors.push(this);
+        }
+        if (y != 0) {       // if vacancy block is not in the first column, move leftward is available
+            exch(vacancy, vacancy - 1);
+            mNeighbors.push(this);
+        }
+        if (y != n - 1)  {  // if vacancy block is not in the last column, move rightward is available
+            exch(vacancy, vacancy + 1);
+            mNeighbors.push(this);
+        }
+        return mNeighbors;
+
+    }
+    private void exch(int vacancy2, int i) {
+        // TODO Auto-generated method stub
+        
     }
     private char[] copy(int[][] blocks) {
         char[] copy = new char[n * n];
@@ -173,7 +212,10 @@ public class Board {
         System.out.println("manhattan :　" + board.manhattan());
         /************test toString()******************/
         System.out.println(board);
-        /************test toString()******************/
+        /************test isArrayEqual()******************/
+        System.out.println("isArrayEqual : " + board.isArrayEqual(board.blockz, board.blockz));
+        /************test isArrayEqual()******************/
+        
     }
 }
 /*private final char[] blockz;
