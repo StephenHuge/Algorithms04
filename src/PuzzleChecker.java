@@ -27,14 +27,16 @@
 
 import edu.princeton.cs.algs4.In;
 import edu.princeton.cs.algs4.StdOut;
+import edu.princeton.cs.algs4.Stopwatch;
 
 public class PuzzleChecker {
 
     public static void main(String[] args) {
 
         // for each command-line argument
-        for (String filename : args) {
-
+        In inFiles = new In(args[0]);
+        while (inFiles.hasNextLine()) {
+            String filename = "src/" + inFiles.readLine();
             // read in the board specified in the filename
             In in = new In(filename);
             int n = in.readInt();
@@ -46,9 +48,12 @@ public class PuzzleChecker {
             }
 
             // solve the slider puzzle
+            Stopwatch sw = new Stopwatch();
             Board initial = new Board(tiles);
             Solver solver = new Solver(initial);
-            StdOut.println(filename + ": " + solver.moves());
+            double time = sw.elapsedTime();
+            StdOut.println(filename + ": " + solver.moves() + ", running time :" + time);
+            System.out.println("------------------------------------");
         }
     }
 }
