@@ -1,3 +1,4 @@
+import edu.princeton.cs.algs4.In;
 import edu.princeton.cs.algs4.Queue;
 
 public class Board {
@@ -8,19 +9,20 @@ public class Board {
 
     private final int manhattan;
 
-    private final Object blockz;
+    private final char[] blockz;    // 1 - dimension char array for improving performance
 
     private Queue<Board> neighbors;
 
     private final int vacancy;
-    
+
     public Board(int[][] blocks)           // construct a board from an n-by-n array of blocks
     {
-        vacancy = validate(blocks);
-        n = blocks.length;
+        vacancy = validate(blocks);     // validate
+        n = blocks.length;              // set length
+        blockz = copy(blocks);          // allocate array
+
         hamming = getHamming();
         manhattan = getManhattan();
-        blockz = copy(blocks);
     }
     public int dimension()                 // board dimension n
     {
@@ -71,17 +73,61 @@ public class Board {
         }
         return s.toString();
     }
+    /**
+     * validate whether array blocks is legal, also get vacancy for this board
+     *  
+     * @param blocks
+     * @return
+     */
     private int validate(int[][] blocks) {
-        // TODO Auto-generated method stub
-        return -1;
+        int vacant = -1;  // vacancy for this method
+        if (blocks == null || blocks.length == 0 || blocks[0].length == 0)
+            throw new IllegalArgumentException();
+
+        int len = blocks.length;
+        for (int i = 0; i < len; i++) {
+            for (int j = 0; j < len; j++) {
+                if (blocks[i][j] < 0)   throw new IllegalArgumentException();
+                else if (blocks[i][j] == 0) {
+                    vacant = i * len + j;
+                }   
+            }
+        }
+
+        if (vacant == -1)       throw new IllegalArgumentException();
+        return vacant;
     }
     private int getManhattan() {
-        // TODO Auto-generated method stub
-        return 0;
+        int mManhattan  = 0;
+        int len = blockz.length;
+        for (int i = 0; i < len; i++) {
+            if ((blockz[i] != '0') && (blockz[i] != (char) (i  + 1 + 48))) {
+
+                // e.g.: 8 is in index 1 -->(0, 1) : first row, second column  
+                // 8 - 1 = 7, x = 7 / 3 - 0 = 2, y = 7 % 3 - 1 = 0
+                // so manhattan distance of 7 is 2 + 0 = 2
+                int node = blockz[i] - 48 - 1;
+                int x = node / 3 - i / 3;        
+                int y = node % 3 - i % 3;
+
+                x = x > 0 ? x : -x;     // make sure x distance is positive
+                y = y > 0 ? y : -y;     // make sure y distance is positive
+                mManhattan += (x + y);
+//                System.out.println(String.format("manhattan of %d is %d", node + 1, (x + y)) );
+            }
+        }
+        return mManhattan;
     }
     private int getHamming() {
-        // TODO Auto-generated method stub
-        return 0;
+        int mHamming = 0;
+        int len = blockz.length;
+        for (int i = 0; i < len; i++) {
+            if ((blockz[i] != '0') && (blockz[i] != (char) (i  + 1 + 48))) {
+                //                System.out.println("hamming " + blockz[i] + " : " + (char) (i  + 1 + 48));
+                mHamming++;
+            } 
+        }
+        return mHamming;
     }
     private boolean isArrayEqual(Object blockz2, Object blockz3) {
         // TODO Auto-generated method stub
@@ -91,12 +137,43 @@ public class Board {
         // TODO Auto-generated method stub
 
     }
-    private Object copy(int[][] blocks) {
-        // TODO Auto-generated method stub
-        return null;
+    private char[] copy(int[][] blocks) {
+        char[] copy = new char[n * n];
+        int len = blocks.length;
+        for (int i = 0; i < len; i++) {
+            for (int j = 0; j < len; j++) {
+                copy[i * len + j] = (char) (blocks[i][j] + 48);
+            }
+        }
+        return copy;
     }
     public static void main(String[] args) // unit tests (not graded)
-    {}
+    {
+        In in = new In(args[0]);
+        int n = in.readInt();
+        int[][] blocks = new int[n][n];
+
+        for (int i = 0; i < blocks.length; i++) {
+            for (int j = 0; j < blocks[0].length; j++) {
+                blocks[i][j] = in.readInt();
+            }
+        }
+        Board board = new Board(blocks);
+        /************test validate()******************/
+        System.out.println("board.vacancy: " + board.vacancy);  
+        /************test copy()******************/
+        char[] blockz = board.blockz;
+        System.out.print("char array: ");
+        for (int i = 0; i < blockz.length; i++) {
+            System.out.print(blockz[i] + " ");
+        }
+        System.out.println();
+        /************test hamming()******************/
+        System.out.println("hamming :　" + board.hamming());
+        /************test manhattan()******************/
+        System.out.println("manhattan :　" + board.manhattan());
+        /************test manhattan()******************/
+    }
 }
 /*private final char[] blockz;
 
