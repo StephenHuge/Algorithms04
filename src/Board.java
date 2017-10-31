@@ -55,11 +55,10 @@ public class Board {
     public Board twin()                    // a board that is obtained by exchanging any pair of blocks
     {
         int p1 = 0;
-        int p2 = 0;
-        while (blockz[p1] == '0' || blockz[p2] == '0') {
-            if (p1 == p2)   p1++;
-            p2++;
-        }
+        int p2 = n - 1;
+        if (blockz[p1] == '0') p1++;
+        if (blockz[p2] == '0') p2++;
+        
         exch(p1, p2);       // swap entry by indexes
         Board twin = new Board(getArray(blockz));
         exch(p2, p1);   // swap back for another use    
@@ -149,8 +148,7 @@ public class Board {
         return mHamming;
     }
     private boolean isArrayEqual(char[] c1, char[] c2) {
-        if (c1 == null || c2 == null || c1.length != c2.length)
-                return false;
+        if (c1 == null || c2 == null || c1.length != c2.length) return false;
         int len = c1.length;
         for (int i = 0; i < len; i++) {
             if (c1[i] - c2[i] != 0)     return false;

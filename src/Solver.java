@@ -34,8 +34,8 @@ public class Solver {
     private Priority solve(MinPQ<Priority> minPQ, Priority min, boolean mSolvable) {
         int count = 0;
         while (true) {
-            count++;
-            if (count > 99999999)   break;
+            count ++;
+            if (count > 999999)   break;
             min = minPQ.delMin();   // find the smallest one
             //            System.out.println(min.board);
             //            System.out.println("priority: " + min.getPriority() +
@@ -54,6 +54,7 @@ public class Solver {
             }
             /*******************insert neighbors*************************/
         }
+        System.out.println("count is : " + count);
         return min;
     }
     public boolean isSolvable()            // is the initial board solvable?
