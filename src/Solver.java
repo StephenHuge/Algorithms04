@@ -58,18 +58,19 @@ public class Solver {
             } 
 
             /*******************insert neighbors*************************/
-            Iterable<Board> it = min.board.neighbors(); // get smallest one's neighbors
-            for (Board b : it) {
-                if (!b.equals(min.board))   minPQ.insert(new Priority(b, min));
-            }
-            it = twin.board.neighbors(); // get smallest one's neighbors
-            for (Board b : it) {
-                if (!b.equals(twin.board))   twinPQ.insert(new Priority(b, twin));
-            }
+            insertNeighbors(minPQ, min);
+            insertNeighbors(twinPQ, twin);
             /*******************insert neighbors*************************/
         }
         if (solvable)   return min;
         return null;
+    }
+    private Iterable<Board> insertNeighbors(MinPQ<Priority> minPQ, Priority min) {
+        Iterable<Board> it = min.board.neighbors(); // get smallest one's neighbors
+        for (Board b : it) {
+            if (!b.equals(min.board))   minPQ.insert(new Priority(b, min));
+        }
+        return it;
     }
     public boolean isSolvable()            // is the initial board solvable?
     {
@@ -103,13 +104,7 @@ public class Solver {
         }
         @Override
         public int compareTo(Priority p) {
-            if (getPriority() < p.getPriority())    return -1;
-            if (getPriority() > p.getPriority())    return 1;
-            else {
-                if (manhattan < p.manhattan)    return -1;
-                if (manhattan > p.manhattan)    return 1;
-            }
-            return 0;
+            return Integer.compare(getPriority(), p.getPriority());
         }
     }
     public static void main(String[] args) // solve a slider puzzle (given below)
