@@ -34,7 +34,26 @@ public class PuzzleChecker {
     public static void main(String[] args) {
 
         // for each command-line argument
-        In inFiles = new In(args[0]);
+        test(args[0], 100);
+    }
+    private static void test(String args0, int times) {
+        double time1 = 0;
+        double time2 = 0;
+        for (int i = 0; i < times; i++) {
+
+            double allTime1 = calculate1(args0);
+            time1 += allTime1;
+            double allTime2 = calculate2(args0);
+            time2 += allTime2;
+        }
+        time1 = time1 / times;
+        time2 = time2 / times;
+        
+        StdOut.println("All running time1: " + time1);
+        StdOut.println("All running time2: " + time2);
+    }
+    private static double calculate1(String args0) {
+        In inFiles = new In(args0);
         double allTime = 0;
         while (inFiles.hasNextLine()) {
             String filename = "src/" + inFiles.readLine();
@@ -54,9 +73,35 @@ public class PuzzleChecker {
             Solver solver = new Solver(initial);
             double time = sw.elapsedTime();
             allTime += time;
-            StdOut.println(filename + ": " + solver.moves() + ", running time :" + time);
-            System.out.println("------------------------------------");
+            //            StdOut.println(filename + ": " + solver.moves() + ", running time :" + time);
+            //            System.out.println("------------------------------------");
         }
-        StdOut.println("All running time :" + allTime);
+        return allTime;
+    }
+    private static double calculate2(String args0) {
+        In inFiles = new In(args0);
+        double allTime = 0;
+        while (inFiles.hasNextLine()) {
+            String filename = "src/" + inFiles.readLine();
+            // read in the board specified in the filename
+            In in = new In(filename);
+            int n = in.readInt();
+            int[][] tiles = new int[n][n];
+            for (int i = 0; i < n; i++) {
+                for (int j = 0; j < n; j++) {
+                    tiles[i][j] = in.readInt();
+                }
+            }
+
+            // solve the slider puzzle
+            Stopwatch sw = new Stopwatch();
+            Board initial = new Board(tiles);
+            Solver2 solver = new Solver2(initial);
+            double time = sw.elapsedTime();
+            allTime += time;
+            //            StdOut.println(filename + ": " + solver.moves() + ", running time :" + time);
+            //            System.out.println("------------------------------------");
+        }
+        return allTime;
     }
 }
