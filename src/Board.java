@@ -47,9 +47,9 @@ public class Board {
     public Board twin()                    // a board that is obtained by exchanging any pair of blocks
     {
         int p1 = 0;
-        int p2 = n - 1;
+        int p2 = n * n - 1;
         if (blockz[p1] == '0') p1++;
-        if (blockz[p2] == '0') p2++;
+        if (blockz[p2] == '0') p2--;
 
         exch(p1, p2);       // swap entry by indexes
         Board twin = new Board(getArray(blockz));
@@ -210,8 +210,9 @@ public class Board {
             }
         }
         Board board = new Board(blocks);
+        System.out.println(board);
         /* ***********test validate()***************** */
-        System.out.println("board.vacancy: " + board.vacancy);  
+        //        System.out.println("board.vacancy: " + board.vacancy);  
         /* ***********test copy()***************** */
         //        char[] blockz = board.blockz;
         //        System.out.print("char array: ");
@@ -228,12 +229,14 @@ public class Board {
         /* ***********test isArrayEqual()******************/
         //        System.out.println("isArrayEqual : " + board.isArrayEqual(board.blockz, board.blockz));
         /* ***********test neighbor()***************** */
-        Iterable<Board> it = board.neighbors();
-        System.out.println("neighbors: ");
-        for (Board b : it) {
-            System.out.println(b);
-        }
-        /* ***********test neighbor()***************** */
+        //        Iterable<Board> it = board.neighbors();
+        //        System.out.println("neighbors: ");
+        //        for (Board b : it) {
+        //            System.out.println(b);
+        //        }
+        /* ***********test twin()***************** */
+        Board twin = board.twin();
+        System.out.println(twin);
 
     }
 }
