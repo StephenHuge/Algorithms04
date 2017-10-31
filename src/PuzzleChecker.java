@@ -56,7 +56,6 @@ public class PuzzleChecker {
             allTime += time;
             StdOut.println(filename + ": " + solver.moves() + ", running time :" + time);
             System.out.println("------------------------------------");
-            System.out.println(solver.solution() == null);
         }
         StdOut.println("All running time :" + allTime);
     }
