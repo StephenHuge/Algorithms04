@@ -35,6 +35,7 @@ public class PuzzleChecker {
 
         // for each command-line argument
         In inFiles = new In(args[0]);
+        double allTime = 0;
         while (inFiles.hasNextLine()) {
             String filename = "src/" + inFiles.readLine();
             // read in the board specified in the filename
@@ -52,8 +53,11 @@ public class PuzzleChecker {
             Board initial = new Board(tiles);
             Solver solver = new Solver(initial);
             double time = sw.elapsedTime();
+            allTime += time;
             StdOut.println(filename + ": " + solver.moves() + ", running time :" + time);
             System.out.println("------------------------------------");
+            System.out.println(solver.solution() == null);
         }
+        StdOut.println("All running time :" + allTime);
     }
 }
