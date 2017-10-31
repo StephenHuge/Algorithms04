@@ -36,7 +36,7 @@ public class Solver {
     private Priority solve(MinPQ<Priority> minPQ, Priority min, boolean mSolvable) {
         int count = 0;
         while (true) {
-            count ++;
+            count++;
             if (count > 9999999)   break;
             min = minPQ.delMin();   // find the smallest one
             //            System.out.println(min.board);
@@ -56,7 +56,7 @@ public class Solver {
             }
             /*******************insert neighbors*************************/
         }
-        System.out.println("count is : " + count);
+//        System.out.println("count is : " + count);
         return min;
     }
     public boolean isSolvable()            // is the initial board solvable?
@@ -78,8 +78,8 @@ public class Solver {
             if (p1.getPriority() < p2.getPriority())    return -1;
             if (p1.getPriority() > p2.getPriority())    return 1;
             else {
-                if (p1.board.manhattan() < p2.board.manhattan())    return -1;
-                if (p1.board.manhattan() > p2.board.manhattan())    return 1;
+                if (p1.manhattan < p2.manhattan)    return -1;
+                if (p1.manhattan > p2.manhattan)    return 1;
                 return 0;
             }
         }
@@ -88,12 +88,14 @@ public class Solver {
     private class Priority {
         Board board;
         int moves;
+        int manhattan;
         int priority;
         Priority father;
         Priority(Board mBoard, int mMoves, Priority mFather) {
             this.board = mBoard;
             this.moves = mMoves;
-            this.priority = board.manhattan() + moves;
+            this.manhattan = board.manhattan(); 
+            this.priority = manhattan + moves;
             this.father = mFather;
         }
         int getPriority() {
