@@ -26,9 +26,7 @@ public class Solver {
         minPQ.insert(min);      // insert min
         twinPQ.insert(twin);      
         Priority sol = solve(minPQ, twinPQ);
-
         
-        /* *****************solution*********************** */
         solution = new Stack<>();
         while (sol != null) {       // get solution
             solution.push(sol.board);
@@ -40,27 +38,18 @@ public class Solver {
         Priority twin;
         while (true) {
             min = minPQ.delMin();   // find the smallest one
-            twin = twinPQ.delMin();   // find the smallest one
-
-//                        System.out.println(min.board);
-//                        System.out.println("priority: " + min.getPriority() +
-//                                ", manhattan: " + min.board.manhattan() +
-//                                ", moves: " +min.moves + " ");
-                        
             if (min.board.isGoal()) {   // solvable
                 solvable = true;
                 moves = min.moves;
                 break;
             } 
+            twin = twinPQ.delMin();   // find the smallest one
             if (twin.board.isGoal()) {   // unsolvable
                 moves = -1;
                 break;
             } 
-
-            /*******************insert neighbors*************************/
             insertNeighbors(minPQ, min);
             insertNeighbors(twinPQ, twin);
-            /*******************insert neighbors*************************/
         }
         if (solvable)   return min;
         return null;
@@ -68,7 +57,7 @@ public class Solver {
     private Iterable<Board> insertNeighbors(MinPQ<Priority> minPQ, Priority min) {
         Iterable<Board> it = min.board.neighbors(); // get smallest one's neighbors
         for (Board b : it) {
-            if (!b.equals(min.board))   minPQ.insert(new Priority(b, min));
+            if (min.father == null || !b.equals(min.father.board))   minPQ.insert(new Priority(b, min));
         }
         return it;
     }
