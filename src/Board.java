@@ -17,13 +17,13 @@ public class Board {
     
     private int lastMoveDirection = 0;
     
-    private final int UPWARD = 1;
+    private static final int UPWARD = 1;
     
-    private final int DOWNWARD = -1;
+    private static final int DOWNWARD = -1;
     
-    private final int LEFTWARD = 2;
+    private static final int LEFTWARD = 2;
     
-    private final int RIGHTWARD = -2;
+    private static final int RIGHTWARD = -2;
 
     public Board(int[][] blocks)           // construct a board from an n-by-n array of blocks
     {
@@ -241,31 +241,31 @@ public class Board {
             }
         }
         Board board = new Board(blocks);
-        /************test validate()******************/
+        /* ***********test validate()***************** */
         System.out.println("board.vacancy: " + board.vacancy);  
-        /************test copy()******************/
+        /* ***********test copy()***************** */
         char[] blockz = board.blockz;
 //        System.out.print("char array: ");
 //        for (int i = 0; i < blockz.length; i++) {
 //            System.out.print(blockz[i] + " ");
 //        }
 //        System.out.println();
-//        /************test hamming()******************/
+//        /* ***********test hamming()***************** */
 //        System.out.println("hamming :　" + board.hamming());
-//        /************test manhattan()******************/
+//        /* ***********test manhattan()***************** */
 //        System.out.println("manhattan :　" + board.manhattan());
-        /************test toString()******************/
+        /* ***********test toString()***************** */
         System.out.println(board.toString());
-        /************test isArrayEqual()******************/
+        /* ***********test isArrayEqual()******************/
 //        System.out.println("isArrayEqual : " + board.isArrayEqual(board.blockz, board.blockz));
-//        /************test neighbor()******************/
+//        /* ***********test neighbor()***************** */
 //        Iterable<Board> it = board.neighbors();
 //        System.out.println("neighbors: ");
 //        for (Board b : it) {
 //            System.out.println("last move direction : " + b.lastMoveDirection);
 //            System.out.println(b);
 //        }
-//        /************test neighbor()******************/
+//        /* ***********test neighbor()***************** */
         
     }
 }

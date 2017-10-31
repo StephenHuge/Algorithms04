@@ -10,7 +10,7 @@ public class Solver {
 
     private boolean solvable = false;
 
-    private Stack<Board> solution = null;
+    private final Stack<Board> solution;
 
     public Solver(Board initial)           // find a solution to the initial board (using the A* algorithm)
     {
@@ -68,7 +68,7 @@ public class Solver {
     {
         return solution;
     }
-    private class PriorityComparator implements Comparator<Priority>{
+    private class PriorityComparator implements Comparator<Priority> {
 
         @Override
         public int compare(Priority p1, Priority p2) {
