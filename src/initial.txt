@@ -1,1 +1,10 @@
+puzzle30.txt
+puzzle31.txt
+puzzle32.txt
+puzzle33.txt
+puzzle34.txt
+puzzle35.txt
 puzzle36.txt
+puzzle37.txt
+puzzle38.txt
+puzzle39.txt
