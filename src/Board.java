@@ -14,17 +14,9 @@ public class Board {
     private Queue<Board> neighbors;
 
     private final int vacancy;
-    
-//    private int lastMoveDirection = 0;    // this is useless by assignent's requirements
-    
-    private static final int UPWARD = 1;
-    
-    private static final int DOWNWARD = -1;
-    
-    private static final int LEFTWARD = 2;
-    
-    private static final int RIGHTWARD = -2;
-    
+
+    //    private int lastMoveDirection = 0;    // this is useless by assignent's requirements
+
     private static final int TRANS = 48;
 
     public Board(int[][] blocks)           // construct a board from an n-by-n array of blocks
@@ -58,7 +50,7 @@ public class Board {
         int p2 = n - 1;
         if (blockz[p1] == '0') p1++;
         if (blockz[p2] == '0') p2++;
-        
+
         exch(p1, p2);       // swap entry by indexes
         Board twin = new Board(getArray(blockz));
         exch(p2, p1);   // swap back for another use    
@@ -160,65 +152,27 @@ public class Board {
         int x = vacancy / n;    // axis of vacancy block, like n = 3, 5 --> (1, 2)
         int y = vacancy % n;
 
-        Board neighbor;
         if (x != 0) {      
-            neighbor = generateNeighbor(DOWNWARD);
-            mNeighbors.enqueue(neighbor);
+            exch(vacancy, vacancy - n);   
+            mNeighbors.enqueue(new Board(getArray(blockz)));
+            exch(vacancy - n, vacancy);   
         }
         if (x != n - 1) {       
-            neighbor = generateNeighbor(UPWARD);
-            mNeighbors.enqueue(neighbor);
+            exch(vacancy, vacancy + n);       // swap entry in vacancy and its upper
+            mNeighbors.enqueue(new Board(getArray(blockz)));
+            exch(vacancy + n, vacancy);   // swap back for another use    
         }
         if (y != 0) {       
-            neighbor = generateNeighbor(RIGHTWARD);
-            mNeighbors.enqueue(neighbor);
-        }
-        if (y != n - 1) {       
-            neighbor = generateNeighbor(LEFTWARD);
-            mNeighbors.enqueue(neighbor);
-        }
-        /*if (lastMoveDirection != UPWARD && x != 0) {      
-            neighbor = generateNeighbor(DOWNWARD);
-            mNeighbors.enqueue(neighbor);
-        }
-        if (lastMoveDirection != DOWNWARD && x != n - 1) {       
-            neighbor = generateNeighbor(UPWARD);
-            mNeighbors.enqueue(neighbor);
-        }
-        if (lastMoveDirection != LEFTWARD && y != 0) {       
-            neighbor = generateNeighbor(RIGHTWARD);
-            mNeighbors.enqueue(neighbor);
-        }
-        if (lastMoveDirection != RIGHTWARD && y != n - 1) {       
-            neighbor = generateNeighbor(LEFTWARD);
-            mNeighbors.enqueue(neighbor);
-        }*/
-         return mNeighbors;   
-    }
-    private Board generateNeighbor(int dir) {
-        Board neighbor = null;
-        if (dir == UPWARD) {
-            exch(vacancy, vacancy + n);       // swap entry in vacancy and its upper
-            neighbor = new Board(getArray(blockz));
-//            neighbor.lastMoveDirection = UPWARD;
-            exch(vacancy + n, vacancy);   // swap back for another use    
-        } else if (dir == DOWNWARD) {
-            exch(vacancy, vacancy - n);   
-            neighbor = new Board(getArray(blockz));
-//            neighbor.lastMoveDirection = DOWNWARD;
-            exch(vacancy - n, vacancy);   
-        } else if (dir == LEFTWARD) {
-            exch(vacancy, vacancy + 1);   
-            neighbor = new Board(getArray(blockz));
-//            neighbor.lastMoveDirection = LEFTWARD;
-            exch(vacancy + 1, vacancy);   
-        } else if (dir == RIGHTWARD) {
             exch(vacancy, vacancy - 1);       
-            neighbor = new Board(getArray(blockz));
-//            neighbor.lastMoveDirection = RIGHTWARD;
+            mNeighbors.enqueue(new Board(getArray(blockz)));
             exch(vacancy - 1, vacancy);   
-        } 
-        return neighbor;
+        }
+        if (y != n - 1) {
+            exch(vacancy, vacancy + 1);   
+            mNeighbors.enqueue(new Board(getArray(blockz)));
+            exch(vacancy + 1, vacancy);   
+        }
+        return mNeighbors;   
     }
     private int[][] getArray(char[] mBlockz) {
         int[][] blocks = new int[n][n];
@@ -259,28 +213,27 @@ public class Board {
         /* ***********test validate()***************** */
         System.out.println("board.vacancy: " + board.vacancy);  
         /* ***********test copy()***************** */
-//        char[] blockz = board.blockz;
-//        System.out.print("char array: ");
-//        for (int i = 0; i < blockz.length; i++) {
-//            System.out.print(blockz[i] + " ");
-//        }
-//        System.out.println();
-//        /* ***********test hamming()***************** */
-//        System.out.println("hamming :　" + board.hamming());
-//        /* ***********test manhattan()***************** */
-//        System.out.println("manhattan :　" + board.manhattan());
+        //        char[] blockz = board.blockz;
+        //        System.out.print("char array: ");
+        //        for (int i = 0; i < blockz.length; i++) {
+        //            System.out.print(blockz[i] + " ");
+        //        }
+        //        System.out.println();
+        //        /* ***********test hamming()***************** */
+        //        System.out.println("hamming :銆�" + board.hamming());
+        //        /* ***********test manhattan()***************** */
+        //        System.out.println("manhattan :銆�" + board.manhattan());
         /* ***********test toString()***************** */
-        System.out.println(board.toString());
+        //        System.out.println(board.toString());
         /* ***********test isArrayEqual()******************/
-//        System.out.println("isArrayEqual : " + board.isArrayEqual(board.blockz, board.blockz));
-//        /* ***********test neighbor()***************** */
-//        Iterable<Board> it = board.neighbors();
-//        System.out.println("neighbors: ");
-//        for (Board b : it) {
-//            System.out.println("last move direction : " + b.lastMoveDirection);
-//            System.out.println(b);
-//        }
-//        /* ***********test neighbor()***************** */
-        
+        //        System.out.println("isArrayEqual : " + board.isArrayEqual(board.blockz, board.blockz));
+        /* ***********test neighbor()***************** */
+        Iterable<Board> it = board.neighbors();
+        System.out.println("neighbors: ");
+        for (Board b : it) {
+            System.out.println(b);
+        }
+        /* ***********test neighbor()***************** */
+
     }
 }
