@@ -14,6 +14,8 @@ public class Solver {
 
     public Solver(Board initial)           // find a solution to the initial board (using the A* algorithm)
     {
+        if (initial == null) throw new java.lang.IllegalArgumentException();
+        
         moves = 0;
         MinPQ<Priority> minPQ = new MinPQ<>(new PriorityComparator());
         Priority min = new Priority(initial, 0, null);
@@ -35,7 +37,7 @@ public class Solver {
         int count = 0;
         while (true) {
             count ++;
-            if (count > 999999)   break;
+            if (count > 9999999)   break;
             min = minPQ.delMin();   // find the smallest one
             //            System.out.println(min.board);
             //            System.out.println("priority: " + min.getPriority() +
@@ -78,10 +80,6 @@ public class Solver {
             else {
                 if (p1.board.manhattan() < p2.board.manhattan())    return -1;
                 if (p1.board.manhattan() > p2.board.manhattan())    return 1;
-                else {
-                    if (p1.board.hamming() < p2.board.hamming())    return -1;
-                    if (p1.board.hamming() > p2.board.hamming())    return 1;
-                }
                 return 0;
             }
         }
