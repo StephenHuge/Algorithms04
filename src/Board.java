@@ -15,7 +15,7 @@ public class Board {
 
     private final int vacancy;
     
-    private int lastMoveDirection = 0;
+//    private int lastMoveDirection = 0;    // this is useless by assignent's requirements
     
     private static final int UPWARD = 1;
     
@@ -24,6 +24,8 @@ public class Board {
     private static final int LEFTWARD = 2;
     
     private static final int RIGHTWARD = -2;
+    
+    private static final int TRANS = 48;
 
     public Board(int[][] blocks)           // construct a board from an n-by-n array of blocks
     {
@@ -85,7 +87,7 @@ public class Board {
         s.append(n + "\n");
         int len = n * n;
         for (int i = 0; i < len; i++) {
-            s.append(String.format("%2d ", (int) blockz[i] - 48));
+            s.append(String.format("%2d ", (int) blockz[i] - TRANS));
             if ((i + 1) % n == 0)   s.append("\n");
         }
         return s.toString();
@@ -118,12 +120,12 @@ public class Board {
         int mManhattan  = 0;
         int len = blockz.length;
         for (int i = 0; i < len; i++) {
-            if ((blockz[i] != '0') && (blockz[i] != (char) (i  + 1 + 48))) {
+            if ((blockz[i] != '0') && (blockz[i] != (char) (i  + 1 + TRANS))) {
 
                 // e.g.: 8 is in index 1 -->(0, 1) : first row, second column  
                 // 8 - 1 = 7, x = 7 / 3 - 0 = 2, y = 7 % 3 - 1 = 0
                 // so manhattan distance of 7 is 2 + 0 = 2
-                int node = blockz[i] - 48 - 1;
+                int node = blockz[i] - TRANS - 1;
                 int x = node / n - i / n;        
                 int y = node % n - i % n;
 
@@ -139,8 +141,8 @@ public class Board {
         int mHamming = 0;
         int len = blockz.length;
         for (int i = 0; i < len; i++) {
-            if ((blockz[i] != '0') && (blockz[i] != (char) (i  + 1 + 48))) {
-                //                System.out.println("hamming " + blockz[i] + " : " + (char) (i  + 1 + 48));
+            if ((blockz[i] != '0') && (blockz[i] != (char) (i  + 1 + TRANS))) {
+                //                System.out.println("hamming " + blockz[i] + " : " + (char) (i  + 1 + TRANS));
                 mHamming++;
             } 
         }
@@ -161,8 +163,23 @@ public class Board {
         int y = vacancy % n;
 
         Board neighbor;
-        
-        if (lastMoveDirection != UPWARD && x != 0) {      
+        if (x != 0) {      
+            neighbor = generateNeighbor(DOWNWARD);
+            mNeighbors.enqueue(neighbor);
+        }
+        if (x != n - 1) {       
+            neighbor = generateNeighbor(UPWARD);
+            mNeighbors.enqueue(neighbor);
+        }
+        if (y != 0) {       
+            neighbor = generateNeighbor(RIGHTWARD);
+            mNeighbors.enqueue(neighbor);
+        }
+        if (y != n - 1) {       
+            neighbor = generateNeighbor(LEFTWARD);
+            mNeighbors.enqueue(neighbor);
+        }
+        /*if (lastMoveDirection != UPWARD && x != 0) {      
             neighbor = generateNeighbor(DOWNWARD);
             mNeighbors.enqueue(neighbor);
         }
@@ -177,7 +194,7 @@ public class Board {
         if (lastMoveDirection != RIGHTWARD && y != n - 1) {       
             neighbor = generateNeighbor(LEFTWARD);
             mNeighbors.enqueue(neighbor);
-        }
+        }*/
          return mNeighbors;   
     }
     private Board generateNeighbor(int dir) {
@@ -185,22 +202,22 @@ public class Board {
         if (dir == UPWARD) {
             exch(vacancy, vacancy + n);       // swap entry in vacancy and its upper
             neighbor = new Board(getArray(blockz));
-            neighbor.lastMoveDirection = UPWARD;
+//            neighbor.lastMoveDirection = UPWARD;
             exch(vacancy + n, vacancy);   // swap back for another use    
         } else if (dir == DOWNWARD) {
             exch(vacancy, vacancy - n);   
             neighbor = new Board(getArray(blockz));
-            neighbor.lastMoveDirection = DOWNWARD;
+//            neighbor.lastMoveDirection = DOWNWARD;
             exch(vacancy - n, vacancy);   
         } else if (dir == LEFTWARD) {
             exch(vacancy, vacancy + 1);   
             neighbor = new Board(getArray(blockz));
-            neighbor.lastMoveDirection = LEFTWARD;
+//            neighbor.lastMoveDirection = LEFTWARD;
             exch(vacancy + 1, vacancy);   
         } else if (dir == RIGHTWARD) {
             exch(vacancy, vacancy - 1);       
             neighbor = new Board(getArray(blockz));
-            neighbor.lastMoveDirection = RIGHTWARD;
+//            neighbor.lastMoveDirection = RIGHTWARD;
             exch(vacancy - 1, vacancy);   
         } 
         return neighbor;
@@ -209,7 +226,7 @@ public class Board {
         int[][] blocks = new int[n][n];
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < n; j++) {
-                blocks[i][j] = (int) (mBlockz[i * n + j] - 48);
+                blocks[i][j] = (int) (mBlockz[i * n + j] - TRANS);
             }
         }
         return blocks;
@@ -224,7 +241,7 @@ public class Board {
         int len = blocks.length;
         for (int i = 0; i < len; i++) {
             for (int j = 0; j < len; j++) {
-                copy[i * len + j] = (char) (blocks[i][j] + 48);
+                copy[i * len + j] = (char) (blocks[i][j] + TRANS);
             }
         }
         return copy;
@@ -244,7 +261,7 @@ public class Board {
         /* ***********test validate()***************** */
         System.out.println("board.vacancy: " + board.vacancy);  
         /* ***********test copy()***************** */
-        char[] blockz = board.blockz;
+//        char[] blockz = board.blockz;
 //        System.out.print("char array: ");
 //        for (int i = 0; i < blockz.length; i++) {
 //            System.out.print(blockz[i] + " ");

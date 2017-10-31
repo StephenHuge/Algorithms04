@@ -24,9 +24,9 @@ public class Solver {
         if (!solvable) {
             min = solve(minPQ, new Priority(initial.twin(), 0, null), false);
         }
-        
+
         Priority sol = min;
-        while (sol != null) {
+        while (sol != null) {       // get solution
             solution.push(sol.board);
             sol = sol.father;
         }
@@ -50,7 +50,7 @@ public class Solver {
             /*******************insert neighbors*************************/
             Iterable<Board> it = min.board.neighbors(); // get smallest one's neighbors
             for (Board b : it) {
-                minPQ.insert(new Priority(b, min.moves + 1, min));
+                if (!b.equals(min.board))   minPQ.insert(new Priority(b, min.moves + 1, min));
             }
             /*******************insert neighbors*************************/
         }
