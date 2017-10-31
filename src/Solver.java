@@ -79,10 +79,12 @@ public class Solver {
     }
     public int moves()                     // min number of moves to solve initial board; -1 if unsolvable
     {
+        if (!solvable)  return -1;
         return moves;
     }
     public Iterable<Board> solution()      // sequence of boards in a shortest solution; null if unsolvable
     {
+        if (!solvable)  return null;
         return solution;
     }
     private class PriorityComparator implements Comparator<Priority> {
@@ -91,6 +93,10 @@ public class Solver {
         public int compare(Priority p1, Priority p2) {
             if (p1.getPriority() < p2.getPriority())    return -1;
             if (p1.getPriority() > p2.getPriority())    return 1;
+//            else {
+//                if (p1.manhattan < p2.manhattan)    return -1;
+//                if (p1.manhattan > p2.manhattan)    return 1;
+//            }
             return 0;
         }
 
@@ -131,8 +137,8 @@ public class Solver {
             StdOut.println("No solution possible");
         else {
             StdOut.println("Minimum number of moves = " + solver.moves());
-            for (Board board : solver.solution())
-                StdOut.println(board);
+//            for (Board board : solver.solution())
+//                StdOut.println(board);
         }
     }
 }
