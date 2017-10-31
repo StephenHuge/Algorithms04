@@ -15,37 +15,47 @@ public class Solver {
     public Solver(Board initial)           // find a solution to the initial board (using the A* algorithm)
     {
         if (initial == null) throw new java.lang.IllegalArgumentException();
-        
+
         moves = 0;
-        MinPQ<Priority> minPQ = new MinPQ<>(new PriorityComparator());
+        Comparator<Priority> comparator = new PriorityComparator();
+
         Priority min = new Priority(initial, 0, null);
-        minPQ.insert(min);      // min is not the ans, insert it
+        Priority twin = new Priority(initial.twin(), 0, null);
+
+        MinPQ<Priority> minPQ = new MinPQ<>(comparator);
+        MinPQ<Priority> twinPQ = new MinPQ<>(comparator);
+
+        minPQ.insert(min);      // insert min
+        twinPQ.insert(twin);      
+        Priority sol = solve(minPQ, twinPQ);
+
+        
+        /* *****************solution*********************** */
         solution = new Stack<>();
-
-        min = solve(minPQ, min, true);
-        if (!solvable) {
-            min = solve(minPQ, new Priority(initial.twin(), 0, null), false);
-        }
-
-        Priority sol = min;
         while (sol != null) {       // get solution
             solution.push(sol.board);
             sol = sol.father;
         }
     }
-    private Priority solve(MinPQ<Priority> minPQ, Priority min, boolean mSolvable) {
-        int count = 0;
+    private Priority solve(MinPQ<Priority> minPQ, MinPQ<Priority> twinPQ) {
+        Priority min;
+        Priority twin;
         while (true) {
-            count++;
-            if (count > 9999999)   break;
             min = minPQ.delMin();   // find the smallest one
-            //            System.out.println(min.board);
-            //            System.out.println("priority: " + min.getPriority() +
-            //                    ", manhattan: " + min.board.manhattan() +
-            //                    ", moves: " +min.moves + " ");
-            if (min.board.isGoal()) {   // get ans
-                solvable = mSolvable;
+            twin = twinPQ.delMin();   // find the smallest one
+
+//                        System.out.println(min.board);
+//                        System.out.println("priority: " + min.getPriority() +
+//                                ", manhattan: " + min.board.manhattan() +
+//                                ", moves: " +min.moves + " ");
+                        
+            if (min.board.isGoal()) {   // solvable
+                solvable = true;
                 moves = min.moves;
+                break;
+            } 
+            if (twin.board.isGoal()) {   // unsolvable
+                moves = -1;
                 break;
             } 
 
@@ -54,10 +64,14 @@ public class Solver {
             for (Board b : it) {
                 if (!b.equals(min.board))   minPQ.insert(new Priority(b, min.moves + 1, min));
             }
+            it = twin.board.neighbors(); // get smallest one's neighbors
+            for (Board b : it) {
+                if (!b.equals(twin.board))   twinPQ.insert(new Priority(b, twin.moves + 1, twin));
+            }
             /*******************insert neighbors*************************/
         }
-//        System.out.println("count is : " + count);
-        return min;
+        if (solvable)   return min;
+        return null;
     }
     public boolean isSolvable()            // is the initial board solvable?
     {
@@ -77,11 +91,7 @@ public class Solver {
         public int compare(Priority p1, Priority p2) {
             if (p1.getPriority() < p2.getPriority())    return -1;
             if (p1.getPriority() > p2.getPriority())    return 1;
-            else {
-                if (p1.manhattan < p2.manhattan)    return -1;
-                if (p1.manhattan > p2.manhattan)    return 1;
-                return 0;
-            }
+            return 0;
         }
 
     }
