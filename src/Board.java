@@ -78,7 +78,7 @@ public class Board {
         s.append(n + "\n");
         int len = n * n;
         for (int i = 0; i < len; i++) {
-            s.append(String.format("%2d ", (int) blockz[i] - TRANS));
+            s.append(String.format("%2d ", blockz[i] - TRANS));
             if ((i + 1) % n == 0)   s.append("\n");
         }
         return s.toString();
@@ -178,7 +178,7 @@ public class Board {
         int[][] blocks = new int[n][n];
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < n; j++) {
-                blocks[i][j] = (int) (mBlockz[i * n + j] - TRANS);
+                blocks[i][j] =  mBlockz[i * n + j] - TRANS;
             }
         }
         return blocks;
@@ -225,7 +225,7 @@ public class Board {
         //        /* ***********test manhattan()***************** */
         //        System.out.println("manhattan :銆�" + board.manhattan());
         /* ***********test toString()***************** */
-        //        System.out.println(board.toString());
+        //                System.out.println(board.toString());
         /* ***********test isArrayEqual()******************/
         //        System.out.println("isArrayEqual : " + board.isArrayEqual(board.blockz, board.blockz));
         /* ***********test neighbor()***************** */
