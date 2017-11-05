@@ -25,7 +25,7 @@ public class Solver {
         minPQ.insert(min);      // insert min
         twinPQ.insert(twin);      
         Priority sol = solve(minPQ, twinPQ);
-        
+
         solution = new Stack<>();
         while (sol != null) {       // get solution
             solution.push(sol.board);
@@ -79,7 +79,7 @@ public class Solver {
         int moves;
         int manhattan;
         Priority father;
-        
+
         Priority(Board mBoard, Priority mFather) {
             this.board = mBoard;
             if (mFather == null)    this.moves = 0;
@@ -105,7 +105,7 @@ public class Solver {
             for (int j = 0; j < n; j++)
                 blocks[i][j] = in.readInt();
         Board initial = new Board(blocks);
-
+        System.out.println(String.format("initial: %s", initial));
         // solve the puzzle
         Solver solver = new Solver(initial);
 
@@ -114,8 +114,8 @@ public class Solver {
             StdOut.println("No solution possible");
         else {
             StdOut.println("Minimum number of moves = " + solver.moves());
-//            for (Board board : solver.solution())
-//                StdOut.println(board);
+            for (Board board : solver.solution())
+                StdOut.println(board);
         }
     }
 }

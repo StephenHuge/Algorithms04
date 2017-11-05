@@ -34,7 +34,7 @@ public class PuzzleChecker {
     public static void main(String[] args) {
 
         // for each command-line argument
-        test(args[0], 100);
+        test(args[0], 1);
     }
     private static void test(String args0, int times) {
         double time1 = 0;
@@ -50,7 +50,7 @@ public class PuzzleChecker {
         time2 = time2 / times;
         
         StdOut.println("All running time1: " + time1);
-        StdOut.println("All running time2: " + time2);
+//        StdOut.println("All running time2: " + time2);
     }
     private static double calculate1(String args0) {
         In inFiles = new In(args0);
@@ -73,8 +73,8 @@ public class PuzzleChecker {
             Solver solver = new Solver(initial);
             double time = sw.elapsedTime();
             allTime += time;
-            //            StdOut.println(filename + ": " + solver.moves() + ", running time :" + time);
-            //            System.out.println("------------------------------------");
+                        StdOut.println(filename + ": " + solver.moves() + ", running time :" + time);
+                        System.out.println("------------------------------------");
         }
         return allTime;
     }
@@ -96,6 +96,7 @@ public class PuzzleChecker {
             // solve the slider puzzle
             Stopwatch sw = new Stopwatch();
             Board initial = new Board(tiles);
+            @SuppressWarnings("unused")
             Solver2 solver = new Solver2(initial);
             double time = sw.elapsedTime();
             allTime += time;
